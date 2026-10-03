@@ -49,7 +49,21 @@ Expected: `36 passed` (about 20 seconds).
 
 ---
 
-## 4. Project structure
+## 4. Project structure & Thesis Algorithm Mapping
+
+This codebase implements and validates the methodology presented in the thesis report:
+`T2510622_main_report_without_sign_.pdf`: *"An Algorithmic Method for Warehouse Order Picking with Congestion and One-Way Aisle Constraints"* (Brac University).
+
+| Thesis Report Reference | Implementation File | Description |
+|---|---|---|
+| **Algorithm 1 (Held-Karp)** | `algorithms/held_karp.py` | Exact Dynamic Programming solver for Asymmetric TSP ($O(2^n \cdot n^2)$), optimal baseline up to 12 picks. |
+| **Algorithm 2 (Genetic Algorithm)** | `algorithms/genetic.py` | Order Crossover (OX), swap/inversion mutation, elitism. |
+| **Algorithm 3 (Ant Colony Optimization)** | `algorithms/aco.py` | Pheromone trail reinforcement and heuristic desirability on directed warehouse graph. |
+| **Algorithm 4 (Ant Lion Optimizer)** | `algorithms/alo.py` | Random-key continuous encoding mapping antlion random walks to valid order permutations. |
+| **Algorithm 5 (Nearest Neighbor + 2-Opt)** | `algorithms/heuristics.py` | Greedy nearest-neighbor route construction with 2-opt local edge exchange refinement. |
+| **Algorithm 6 (Hybrid NN2Opt Collision-Aware)** | `algorithms/hybrid.py` | Direction-aware hybrid combining NN + Or-opt chain relocations (length 1–3) + 2-opt + collision/occupancy weighting. |
+| **Simulation Framework (Sec. 4.2.2 & 4.3)** | `simulation/simulator.py` | Discrete-event SimPy engine with unit cell capacity, conflict logging, wait-for deadlock resolution, and replanning. |
+| **Tables 4.1, 5.2, 5.4 & Figures 5.1–5.8** | `experiments/analyze_report.py` | Automated report generator reproducing all thesis summary tables and publication figures. |
 
 ```
 core/
@@ -57,34 +71,41 @@ core/
   pathfinding.py      A*, BFS distances, asymmetric distance matrix
 algorithms/
   tour.py             tour cost and validity helpers
-  held_karp.py        exact optimum (up to 13 picks)
-  heuristics.py       Nearest Neighbor, 2-opt, NN+2-opt
-  genetic.py          Genetic Algorithm
-  aco.py              Ant Colony Optimization
-  alo.py              Ant Lion Optimizer (random-key encoding)
-  hybrid.py           NN + Or-opt + 2-opt (direction-aware local search)
-  compare.py          quick side-by-side demo
+  held_karp.py        Algorithm 1: exact optimum (up to 13 picks)
+  heuristics.py       Algorithm 5: Nearest Neighbor, 2-opt, NN+2-opt
+  genetic.py          Algorithm 2: Genetic Algorithm
+  aco.py              Algorithm 3: Ant Colony Optimization
+  alo.py              Algorithm 4: Ant Lion Optimizer (random-key encoding)
+  hybrid.py           Algorithm 6: Hybrid NN2Opt (direction & collision-aware)
+  compare.py          quick side-by-side demo with Table 4.1 metrics
 simulation/
   simulator.py        multi-robot SimPy simulator (cell reservation, conflicts, deadlock handling)
   animate.py          renders a simulation run as a GIF
 experiments/
   run.py              full experiment runner (parallel, resumable)
+  analyze_report.py   reproduces Thesis Tables 4.1, 5.2, 5.4 and Figures 5.1-5.8
   check_same.py       verifies two result files match across machines
 tests/                correctness tests for every module
-requirements.txt      exact library versions
+requirements.txt      clean UTF-8 library versions
 ```
 
 ---
 
-## 5. Quick demos
+## 5. Quick demos & Thesis Reproduction
 
 | Command | What it shows | Time |
 |---|---|---|
 | `python -m core.warehouse` | Text picture of narrow and wide layouts | instant |
 | `python -m core.pathfinding` | A→B and B→A routes differ because of one-way aisles | instant |
-| `python -m algorithms.compare` | All 7 algorithms on one order: tour length, gap to optimal, time | ~1 s |
+| `python -m algorithms.compare` | All 7 algorithms on one order: tour length, gap, time, memory | ~1 s |
+| `python -m algorithms.compare --table` | **Reproduces Thesis Table 4.1** for a sample order | ~1 s |
+| `python -m experiments.analyze_report` | **Reproduces Thesis Tables 4.1, 5.2, and 5.4** from experiment data | instant |
+| `python -m experiments.analyze_report --plots` | **Generates all Thesis Figures 5.1 to 5.8** in `figures/` | ~3 s |
 | `python -m simulation.simulator` | Multi-robot traffic table (narrow/wide, 3/5/10 robots, wait/replan) | ~10 s |
 | `python -m simulation.animate` | Saves `figures/simulation.gif` | ~40 s |
+
+> **Note on Terminology ("Collisions" vs. "Conflicts"):** In Chapter 5 (Table 5.4, Fig 5.8), the thesis refers to "Collision Count". In the physical SimPy discrete-event model, each cell has `capacity=1`, so physical overlap is prevented. The reported "collision count" corresponds to **traffic conflicts / contention events** where a robot attempts to enter an occupied cell and is forced to wait or replan. `SimResult.collisions` is provided as an explicit alias.
+
 
 Animation options:
 ```

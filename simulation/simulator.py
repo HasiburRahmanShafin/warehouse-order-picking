@@ -71,6 +71,23 @@ class SimResult:
     planning_ms: float            # total wall-clock time spent sequencing orders
     trajectories: dict = field(default_factory=dict, repr=False)   # robot -> [(time, cell)]
 
+    # --- Properties aligning with Thesis Report terminology (Chapter 4 & 5, Tables 4.1, 5.1, 5.4) ---
+    @property
+    def collisions(self) -> int:
+        """Alias for conflicts, matching Thesis Report Table 5.4 ('Collision Count') and Figure 5.8."""
+        return self.conflicts
+
+    @property
+    def replan_count(self) -> int:
+        """Alias for replans, matching Thesis Report Table 4.1 & Table 5.1 ('Replan Count')."""
+        return self.replans
+
+    @property
+    def congestion_delay(self) -> float:
+        """Alias for wait_time, matching Thesis Report Table 5.1 ('Congestion delay')."""
+        return self.wait_time
+
+
 
 class Simulation:
     def __init__(self, cfg: SimConfig):
