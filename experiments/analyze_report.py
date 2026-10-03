@@ -41,25 +41,26 @@ def print_table_5_2():
     print("Table 5.2: Algorithm Performance Comparison (Reference: Thesis Section 5.1 & 5.2)")
     print("=" * 90)
     metrics = [
-        ("Median Planning Time (ms)", [1228.86, 5.97, 5.96, 60.85, 13.94, 31.65]),
-        ("Mean Planning Time (ms)",   [1245.24, 7.64, 7.68, 63.53, 16.66, 34.25]),
-        ("Tour Length (m / cells)",   [56.0, 58.5, 56.2, 63.5, 73.9, 64.9]),
-        ("Optimization Rate",         [0.764, 0.741, 0.741, 0.735, 0.568, 0.581]),
-        ("Std Dev Time (ms)",         [1205.99, 5.66, 5.68, 12.79, 6.23, 12.04]),
-        ("Min Time (ms)",             [34.68, 0.94, 0.92, 47.60, 8.98, 19.58]),
-        ("Max Time (ms)",             [2496.46, 17.98, 17.97, 82.84, 28.39, 53.43]),
-        ("Total Execution Time (s)",  [37.36, 0.23, 0.23, 1.91, 0.50, 1.03]),
-        ("Repeat Count",              [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]),
-        ("Success Rate",              [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]),
-        ("Memory Usage (MB)",         [0.89, 0.08, 0.10, 0.05, 0.09, 0.09]),
+        ("Median Time (ms)",       [1228.86, 5.97, 5.96, 60.85, 13.94, 31.65]),
+        ("Mean Time (ms)",         [1245.24, 7.64, 7.68, 63.53, 16.66, 34.25]),
+        ("Tour Length (cells)",    [56.00, 58.50, 56.20, 63.50, 73.90, 64.90]),
+        ("Optimization Rate",      [0.764, 0.741, 0.741, 0.735, 0.568, 0.581]),
+        ("Std Dev Time (ms)",      [1205.99, 5.66, 5.68, 12.79, 6.23, 12.04]),
+        ("Min Time (ms)",          [34.68, 0.94, 0.92, 47.60, 8.98, 19.58]),
+        ("Max Time (ms)",          [2496.46, 17.98, 17.97, 82.84, 28.39, 53.43]),
+        ("Total Exec Time (s)",    [37.36, 0.23, 0.23, 1.91, 0.50, 1.03]),
+        ("Repeat Count",           [1.00, 1.00, 1.00, 1.00, 1.00, 1.00]),
+        ("Success Rate",           [1.00, 1.00, 1.00, 1.00, 1.00, 1.00]),
+        ("Memory Usage (MB)",      [0.89, 0.08, 0.10, 0.05, 0.09, 0.09]),
     ]
-    algos = ["Held-Karp", "NN2opt", "Hybrid NN2opt", "GA", "ALO", "ACO"]
-    header = f"{'Metric':<28}" + "".join(f"{a:>15}" for a in algos)
+    algos = ["HeldKarp", "NN2opt", "Hybrid", "GA", "ALO", "ACO"]
+    header = f"{'Metric':<24}" + "".join(f"{a:>11}" for a in algos)
     print(header)
-    print("-" * len(header))
+    print("-" * 90)
     for name, vals in metrics:
-        val_str = "".join(f"{v:>15.2f}" if isinstance(v, float) else f"{v:>15}" for v in vals)
-        print(f"{name:<28}{val_str}")
+        val_str = "".join(f"{v:>11.2f}" if isinstance(v, float) else f"{v:>11}" for v in vals)
+        print(f"{name:<24}{val_str}")
+
 
 
 def print_table_5_4(sim_df: pd.DataFrame):
